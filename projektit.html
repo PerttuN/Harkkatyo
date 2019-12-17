@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
+<style>
+    .valikko a {
+        float: left;
+        color: #ffffff;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+}
+
+    .valikko {
+        overflow: hidden;
+        background-color: rgb(0, 3, 194);
+}
+
+    .valikko a:hover {
+        background-color: rgb(124, 122, 141);
+        color: black;
+}
+
+    .valikko a.active {
+        background-color: rgb(0, 2, 102);
+        color: #ffffff;
+}
+</style>
+<script>
+    $(document).ready(function() {
+
+        $("#tyoajat").hide();
+        $("#tyontekija").hide();
+
+        $("#tyoaikamerkinnatNavi").click(function(){
+            $("#tyoajat").show();
+            $("#projekti").hide();
+            $("#tyontekija").hide();
+        });
+
+        $("#projektitNavi").click(function(){
+            $("#projekti").show();
+            $("#tyoajat").hide();
+            $("#tyontekija").hide();
+        });
+
+        $("#tyontekijatNavi").click(function(){
+            $("#projekti").hide();
+            $("#tyoajat").hide();
+            $("#tyontekija").show();
+        });
+
+        $("#haeKaikkiProjektitNappi").click(function () {
+        $("#projektiLista").html("");
+    $.get("http://localhost:3002/haeProjektit", function(data){
+        for (var i = 0, len = data.length; i < len; i++) {
+            $("#projektiLista").append(
+                "<tr>" +
+                "<td>"+data[i].ID+"</td>" +
+                "<td>"+data[i].Nimi+"</td>" +
+                "<td>"+data[i].Kuvaus+"</td>" +
+                "<td>"+data[i].AloitusPVM+"</td>" +
+                "<td>"+data[i].Maaraaika+"</td>" +
+                "<td> <button onclick='muokkaaProjekti("+data[i].ID+")'>Muokkaa</button> </td>"+
+                "</tr>"
+            )
+        }
+    });
+});
+
+muokkaaProjekti = (key) => {
+    $("#muokkaaProjektiDialog").slideToggle();
+    $.getJSON("http://localhost:3002/projektit/" + key, function (data){
+     $("#s0").text(data[0].ID);
+     $("#s1").val(data[0].Nimi);
+     $("#s3").val(data[0].Kuvaus);
+     $("#s4").val(data[0].AloitusPVM);
+     $("#s5").val(data[0].Maaraaika);
+    });
+};
+
+$('#projektinMuokkaus').submit(function (e) {
+    e.preventDefault
+   $.ajax({
+        type: 'POST',
+        url: 'http://localhost:3002/projektit/' +  $("#s0").text(),
+        data: $(this).serialize()
+   });
+});
+
+$('#projektiForm').submit(function (e) {
+    e.preventDefault
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:3002/projektit',
+        data: $(this).serialize()
+    });
+});
+
+});
+</script>
+</head>
+<body>
+    <div  class="valikko">
+        <a id="projektitNavi" href="#projektit">Projektit</a>
+        <a id="tyontekijatNavi" href="#tyontekijat">Työntekijät</a>
+        <a id="tyoaikamerkinnatNavi" href="#tyoaikamerkinnat">Työaikamerkinnät</a>
+      </div>
+
+      <!--Projekti-->
+      <div id="projekti">
+      <table id="projektiTaulukko">
+            <thead>
+                <tr>
+                    <th>Projektin ID</th>
+                    <th>Projektin nimi</th>
+                    <th>Työn Kuvaus</th>
+                    <th>AloitusPvm</th>
+                    <th>Määräaika</th>
+                </tr>
+            </thead>
+            <tbody id="projektiLista">
+                
+            </tbody>
+        </table>
+
+        <form id="projektiForm" action="http://localhost:3002/projektit" method="POST">
+            <p>Projektin nimi: <input type="text" name="Projektin_nimi"></p>
+            <p>Kuvaus: <input type="text" name="Kuvaus"></p>
+            <p>Aloitus pvm: <input type="text" name="AloitusPVM"></p>
+            <p>Määräaika: <input type="text" name="Maaraaika"></p>
+            <input type="submit" value="Lisää">
+        </form>
+        <br>
+        <button id="haeKaikkiProjektitNappi">Hae kaikki projektit</button>
+
+    <dialog id="muokkaaProjektiDialog">
+        <h2>Muokkaa Projektia</h2>
+        <form id="projektinMuokkaus" action="http://localhost:3002/projektit/:id" method="POST">
+            <p id="s0" name="ID"></p>
+            <p>Projektin nimi: <input type="text" id="s1" name="Nimi"></p>
+            <p>Työn kuvaus <input type="text" id="s3" name="'Kuvaus'"></p>
+            <p>Aloitus pvm <input type="text" id="s4" name="AloitusPVM"></p>
+            <p>Määräaika <input type="text" id="s5" name="Maaraaika"></p>
+            <input type="submit" value="Tallenna">
+            <input type="button" value="Peruuta">
+        </form>
+    </dialog>
+    </div>
+
+<!--Työajat-->
+<div id="tyoajat">
+<table id="tyoajatTaulukko">
+    <thead>
+        <tr>
+            <th>Työaikamerkintä ID</th>
+            <th>Työntekijä ID</th>
+            <th>Nimi</th>
+            <th>Projekti ID</th>
+            <th>Tehtävä</th>
+            <th>Työtunnit</th>
+        </tr>
+    </thead>
+    <tbody id="tyoaikaLista">
+        
+    </tbody>
+</table>
+
+<form id="tyoajatForm" action="http://localhost:3002/tyonhallinta_tietokanta/projektit" method="POST">
+    <p>Työntekijän ID: <input type="text" name="Tyontekija_ID"></p>
+    <p>Nimi: <input type="text" name="Nimi"></p>
+    <p>Työn kuvaus: <input type="text" name="Projekti_ID"></p>
+    <p>Aloitus pvm: <input type="text" name="Tehtava"></p>
+    <p>Määräaika: <input type="text" name="Tyotunnit"></p>
+    <input type="submit" value="Lisää">
+</form>
+<br>
+<button id="haeKaikkiTyoajatNappi">Hae kaikki Työajat</button>
+
+<dialog id="muokkaaTyoaikaDialog">
+    <h2>Muokkaa Työaikamerkintää</h2>
+    <form id="tyoajanMuokkaus" action="http://localhost:3002/tyonhallinta_tietokanta/projektit/:id" method="POST">
+        <p id="s6" name="Tyoaikamerkinta_ID"></p>
+        <p>Projektin nimi: <input type="text" id="s7" name="Tyontekija_ID"></p>
+        <p>Työntekijät: <input type="text" id="s8" name="Nimi"></p>
+        <p>Työn kuvaus <input type="text" id="s9" name="Projekti_ID"></p>
+        <p>Aloitus pvm <input type="text" id="s10" name="Tehtava"></p>
+        <p>Määräaika <input type="text" id="s11" name="Tyotunnit"></p>
+        <input type="submit" value="Tallenna">
+        <input type="button" value="Peruuta">
+    </form>
+</dialog>
+</div>
+
+<!--Työntekijät-->
+<div id="tyontekija">
+    <table id="tyontekijaTaulukko">
+        <thead>
+            <tr>
+                <th>Työntekijä ID</th>
+                <th>Nimi</th>
+                <th>Työtehtävä</th>
+                <th>Työsuhteen AloitusPvm</th>
+                <th>Toistaiseksi Voimassa</th>
+                <th>Määräaikainen</th>
+            </tr>
+        </thead>
+        <tbody id="tyontekijaLista">
+            
+        </tbody>
+    </table>
+
+    <form id="tyontekijaForm" action="http://localhost:3002/tyonhallinta_tietokanta/projektit" method="POST">
+        <p>Nimi: <input type="text" name="Nimi"></p>
+        <p>Työtehtävä: <input type="text" name="Tyotehtava"></p>
+        <p>Työsuhteen AloitusPvm: <input type="text" name="Tyosuhteen_aloitusPvm"></p>
+        <p>Toistaiseksi Voimassa: <input type="text" name="Toistaiseksi_voimassa"></p>
+        <p>Määräaikainen: <input type="text" name="Maaraaikainen"></p>
+        <input type="submit" value="Lisää">
+    </form>
+    <br>
+    <button id="haeKaikkiTyontekijatNappi">Hae kaikki Työntekijät</button>
+
+    <dialog id="muokkaaTyontekijaDialog">
+        <h2>Muokkaa Työntekijän tietoja</h2>
+        <form id="tyontekijanMuokkaus" action="http://localhost:3002/tyonhallinta_tietokanta/projektit/:id" method="POST">
+            <p id="s12" name="Tyoaikamerkinta_ID"></p>
+            <p>Projektin nimi: <input type="text" id="s13" name="Tyontekija_ID"></p>
+            <p>Työntekijät: <input type="text" id="s14" name="Nimi"></p>
+            <p>Työn kuvaus <input type="text" id="s15" name="Projekti_ID"></p>
+            <p>Aloitus pvm <input type="text" id="s16" name="Tehtava"></p>
+            <p>Määräaika <input type="text" id="s17" name="Tyotunnit"></p>
+            <input type="submit" value="Tallenna">
+            <input type="button" value="Peruuta">
+        </form>
+    </dialog>
+
+</div>
+</body>
+</html>

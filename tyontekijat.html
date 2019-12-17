@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
+<style>
+    .valikko a {
+        float: left;
+        color: #ffffff;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+}
+
+    .valikko {
+        overflow: hidden;
+        background-color: rgb(0, 3, 194);
+}
+
+    .valikko a:hover {
+        background-color: rgb(124, 122, 141);
+        color: black;
+}
+
+    .valikko a.active {
+        background-color: rgb(0, 2, 102);
+        color: #ffffff;
+}
+</style>
+<script>
+    $(document).ready(function() {
+
+    $("#haeKaikkiTyontekijatNappi").click(function () {
+    $("#tyontekijaLista").html("");
+    $.get("http://localhost:3002/tyontekijat", function(data){
+        for (var i = 0, len = data.length; i < len; i++) {
+            $("#tyontekijaLista").append(
+                "<tr>" +
+                "<td>"+data[i].ID+"</td>" +
+                "<td>"+data[i].Etunimi+"</td>" +
+                "<td>"+data[i].Sukunimi+"</td>" +
+                "<td>"+data[i].Osoite+"</td>" +
+                "<td>"+data[i].Tyosuhde_ID+"</td>" +
+                "<td>"+data[i].Tyosuhteen_aloitusPvm+"</td>" +
+                "<td> <button onclick='muokkaaTyontekija("+data[i].ID+")'>Muokkaa</button> </td>"+
+                "</tr>"
+            )
+        }
+    });
+});
+
+muokkaaTyontekija = (key) => {
+    $("#muokkaaTyontekijaDialog").slideToggle();
+    $.getJSON("http://localhost:3002/tyontekijat/" + key, function (data){
+     $("#s0").text(data[0].ID);
+     $("#s1").val(data[0].Etunimi);
+     $("#s2").val(data[0].Sukunimi);
+     $("#s3").val(data[0].Osoite);
+     $("#s4").val(data[0].Tyosuhde_ID);
+     $("#s5").val(data[0].Tyosuhteen_aloitusPvm);
+    });
+};
+
+$('#tyontekijanMuokkaus').submit(function (e) {
+    e.preventDefault
+   $.ajax({
+        type: 'POST',
+        url: 'http://localhost:3002/tyontekijat/' +  $("#s0").text(),
+        data: $(this).serialize()
+   });
+});
+
+$('#tyontekijaForm').submit(function (e) {
+    e.preventDefault
+    $.ajax({
+        type: 'POST',
+        url: 'http://localhost:3002/tyontekijat',
+        data: $(this).serialize()
+    });
+});
+
+});
+</script>
+</head>
+<body>
+    <div  class="valikko">
+        <a id="projektitNavi" href="/projektit">Projektit</a>
+        <a id="tyontekijatNavi" href="/tyontekijat">Työntekijät</a>
+        <a id="tyoaikamerkinnatNavi" href="/tyoaikamerkinnat">Työaikamerkinnät</a>
+      </div>
+
+<!--Työntekijät-->
+    <table id="tyontekijaTaulukko">
+        <thead>
+            <tr>
+                <th>Työntekijä ID</th>
+                <th>Nimi</th>
+                <th>Työtehtävä</th>
+                <th>Työsuhteen AloitusPvm</th>
+                <th>Toistaiseksi Voimassa</th>
+                <th>Määräaikainen</th>
+            </tr>
+        </thead>
+        <tbody id="tyontekijaLista">
+            
+        </tbody>
+    </table>
+
+    <form id="tyontekijaForm" action="http://localhost:3002/tyontekijat" method="POST">
+        <p>Etunimi: <input type="text" name="Etunimi"></p>
+        <p>Sukunimi: <input type="text" name="Sukunimi"></p>
+        <p>Osoite: <input type="text" name="Osoite"></p>
+        <p>Työsuhde ID: <input type="text" name="Tyosuhde_ID"></p>
+        <p>Tyosuhteen_aloitusPvm: <input type="text" name="Tyosuhteen_aloitusPvm"></p>
+        <input type="submit" value="Lisää">
+    </form>
+    <br>
+    <button id="haeKaikkiTyontekijatNappi">Hae kaikki Työntekijät</button>
+
+    <dialog id="muokkaaTyontekijaDialog">
+        <h2>Muokkaa Työntekijän tietoja</h2>
+        <form id="tyontekijanMuokkaus" action="http://localhost:3002/tyontekijat/:id" method="POST">
+            <p id="s0" name="ID"></p>
+            <p>Etunimi: <input type="text" id="s1" name="Etunimi"></p>
+            <p>Sukunimi: <input type="text" id="s2" name="Sukunimi"></p>
+            <p>Osoite: <input type="text" id="s3" name="Osoite"></p>
+            <p>Tyosuhde_ID: <input type="text" id="s4" name="Tyosuhde_ID"></p>
+            <p>Tyosuhteen_aloitusPvm <input type="text" id="s5" name="Tyosuhteen_aloitusPvm"></p>
+            <input type="submit" value="Tallenna">
+            <input type="button" value="Peruuta">
+        </form>
+    </dialog>
+
+</body>
+</html>
