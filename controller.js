@@ -16,7 +16,7 @@ module.exports =
 {
 
 //Projekti
-haekaikkiProjektit: function(req, res){
+haeKaikkiProjektit: function(req, res){
   connection.query('SELECT * FROM projektit', function(error, results, fields){
       console.log("Data = " + JSON.stringify(results));
       res.json(results);
@@ -45,13 +45,13 @@ haekaikkiProjektit: function(req, res){
 		
         console.log("Create = " + JSON.stringify(req.body));
 		
-		if ( req.body.Projektin_nimi == "" || req.body.Kuvaus == "" || req.body.AloitusPVM == "" || req.body.Maaraaika == "" )
+		if ( req.body.Nimi == "" || req.body.Kuvaus == "" || req.body.AloitusPVM == "" || req.body.Maaraaika == "" )
 		{
           res.send({"status": "NOT OK", "error": "Jokin kenttä on tyhjä tai syötit vääränlaista dataa"}); 
 		}
 		else 
 		{
-			var sql = "INSERT INTO projektit(Nimi, Kuvaus, AloitusPVM, Maaraaika) VALUES ('" + req.body.Projektin_nimi + "', '" + req.body.Kuvaus + "', '" + req.body.AloitusPVM + "', '"  + req.body.Maaraaika + "')";
+			var sql = "INSERT INTO projektit(Nimi, Kuvaus, AloitusPVM, Maaraaika) VALUES ('" + req.body.Nimi + "', '" + req.body.Kuvaus + "', '" + req.body.AloitusPVM + "', '"  + req.body.Maaraaika + "')";
 			
 			console.log("sql=" + sql);
 			
@@ -70,7 +70,7 @@ haekaikkiProjektit: function(req, res){
 
     muokkaaProjekti: function(req, res){
       var sqlUpdate = "UPDATE projektit";
-        sqlUpdate = sqlUpdate + " SET Nimi = '" +req.body.Projektin_nimi+ "', Kuvaus = '" +req.body.Kuvaus+
+        sqlUpdate = sqlUpdate + " SET Nimi = '" +req.body.Nimi+ "', Kuvaus = '" +req.body.Kuvaus+
          "', AloitusPVM = '" +req.body.AloitusPVM+ "', Maaraaika = '" +req.body.Maaraaika+ "'";
         sqlUpdate = sqlUpdate + " WHERE ID = '" +req.params.id+ "'";
 

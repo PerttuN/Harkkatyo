@@ -1,0 +1,228 @@
+-- phpMyAdmin SQL Dump
+-- version 4.9.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:3306
+-- Generation Time: 16.12.2019 klo 10:09
+-- Palvelimen versio: 8.0.18
+-- PHP Version: 7.3.11
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `tyonhallinta`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Rakenne taululle `merkinnat`
+--
+
+CREATE TABLE `merkinnat` (
+  `ID` int(11) NOT NULL,
+  `Tyontekija_ID` int(50) NOT NULL,
+  `Projekti_ID` int(100) NOT NULL,
+  `Tyotehtava_ID` int(11) NOT NULL,
+  `Pvm` date NOT NULL,
+  `Tunnit` int(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Vedos taulusta `merkinnat`
+--
+
+INSERT INTO `merkinnat` (`ID`, `Tyontekija_ID`, `Projekti_ID`, `Tyotehtava_ID`, `Pvm`, `Tunnit`) VALUES
+(5, 3, 14, 1, '2019-11-04', 8),
+(6, 4, 15, 3, '2019-11-06', 8),
+(7, 5, 16, 2, '2019-12-12', 10);
+
+-- --------------------------------------------------------
+
+--
+-- Rakenne taululle `projektit`
+--
+
+CREATE TABLE `projektit` (
+  `ID` int(11) NOT NULL,
+  `Nimi` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci NOT NULL,
+  `Kuvaus` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci NOT NULL,
+  `AloitusPVM` date NOT NULL,
+  `Maaraaika` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+
+--
+-- Vedos taulusta `projektit`
+--
+
+INSERT INTO `projektit` (`ID`, `Nimi`, `Kuvaus`, `AloitusPVM`) VALUES
+(14, 'Projekti1', 'Tietokanta asiakkaalle', '2019-11-01', '2019-11-01'),
+(15, 'Projekti2', 'Webbisivujen luonti yritykselle', '2019-11-11', '2019-11-01'),
+(16, 'Projekti3', 'Pienen tietoverkon toteutus', '2019-12-04', '2019-11-01');
+
+-- --------------------------------------------------------
+
+--
+-- Rakenne taululle `tyontekijat`
+--
+
+CREATE TABLE `tyontekijat` (
+  `ID` int(11) NOT NULL,
+  `Etunimi` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `Sukunimi` varchar(255) NOT NULL,
+  `Osoite` varchar(255) NOT NULL,
+  `Tyosuhde_ID` int(11) NOT NULL,
+  `Tyosuhteen_aloitusPvm` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Vedos taulusta `tyontekijat`
+--
+
+INSERT INTO `tyontekijat` (`ID`, `Etunimi`, `Sukunimi`, `Osoite`, `Tyosuhde_ID`, `Tyosuhteen_aloitusPvm`) VALUES
+(3, 'Antti', 'Torvinen', 'Tulliportinkatu 1', 1, '2019-11-01'),
+(4, 'Jaakko', 'Liperi', 'Kauppakatu 55', 1, '2019-11-04'),
+(5, 'Saku', 'Mäkinen', 'Leväsentie 44', 2, '2019-12-09');
+
+-- --------------------------------------------------------
+
+--
+-- Rakenne taululle `tyosuhde`
+--
+
+CREATE TABLE `tyosuhde` (
+  `ID` int(11) NOT NULL,
+  `Kuvaus` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Vedos taulusta `tyosuhde`
+--
+
+INSERT INTO `tyosuhde` (`ID`, `Kuvaus`) VALUES
+(1, 'Määräaikainen'),
+(2, 'Toistaiseksi voimassa');
+
+-- --------------------------------------------------------
+
+--
+-- Rakenne taululle `tyotehtavat`
+--
+
+CREATE TABLE `tyotehtavat` (
+  `ID` int(11) NOT NULL,
+  `kuvaus` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Vedos taulusta `tyotehtavat`
+--
+
+INSERT INTO `tyotehtavat` (`ID`, `kuvaus`) VALUES
+(1, 'Ohjelmistokehittäjä'),
+(2, 'Järjestelmäasentaja'),
+(3, 'Käyttöliittymäsuunnittelija');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `merkinnat`
+--
+ALTER TABLE `merkinnat`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `Tyontekija_ID` (`Tyontekija_ID`),
+  ADD KEY `Projekti_ID` (`Projekti_ID`),
+  ADD KEY `Tyotehtava_ID` (`Tyotehtava_ID`);
+
+--
+-- Indexes for table `projektit`
+--
+ALTER TABLE `projektit`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `tyontekijat`
+--
+ALTER TABLE `tyontekijat`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `Tyosuhde_ID` (`Tyosuhde_ID`);
+
+--
+-- Indexes for table `tyosuhde`
+--
+ALTER TABLE `tyosuhde`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `tyotehtavat`
+--
+ALTER TABLE `tyotehtavat`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `merkinnat`
+--
+ALTER TABLE `merkinnat`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `projektit`
+--
+ALTER TABLE `projektit`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `tyontekijat`
+--
+ALTER TABLE `tyontekijat`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `tyosuhde`
+--
+ALTER TABLE `tyosuhde`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `tyotehtavat`
+--
+ALTER TABLE `tyotehtavat`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Rajoitteet vedostauluille
+--
+
+--
+-- Rajoitteet taululle `merkinnat`
+--
+ALTER TABLE `merkinnat`
+  ADD CONSTRAINT `Projekti_ID` FOREIGN KEY (`Projekti_ID`) REFERENCES `projektit` (`ID`),
+  ADD CONSTRAINT `Tyontekija_ID` FOREIGN KEY (`Tyontekija_ID`) REFERENCES `tyontekijat` (`ID`),
+  ADD CONSTRAINT `Tyotehtava_ID` FOREIGN KEY (`Tyotehtava_ID`) REFERENCES `tyotehtavat` (`ID`);
+
+--
+-- Rajoitteet taululle `tyontekijat`
+--
+ALTER TABLE `tyontekijat`
+  ADD CONSTRAINT `Tyosuhde_ID` FOREIGN KEY (`Tyosuhde_ID`) REFERENCES `tyosuhde` (`ID`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

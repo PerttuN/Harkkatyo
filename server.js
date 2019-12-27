@@ -52,7 +52,7 @@ app.route('/projektit/:id')
 app.route('/haeTyontekijat')
 .get(controller.haeKaikkiTyontekijat);
 
-app.route('/Tyontekijat')
+app.route('/tyontekijat')
     .get(function (request,response){
         fs.readFile("tyontekijat.html", function(err, data){
             response.writeHead(200, {'Content-Type' : 'text/html'});
@@ -62,7 +62,7 @@ app.route('/Tyontekijat')
     })
     .post(controller.luoTyontekija);
 
-app.route('/Tyontekijat/:id')
+app.route('/tyontekijat/:id')
     .get(controller.haeTyontekija)
     .post(controller.muokkaaTyontekija)
     .delete(controller.poistaTyontekija);
@@ -71,9 +71,9 @@ app.route('/Tyontekijat/:id')
 app.route('/haeTyoaikamerkinnat')
     .get(controller.haeKaikkiTyoaikamerkinnat);
     
- app.route('/Tyoaikamerkinta')
+ app.route('/tyoaikamerkinnat')
     .get(function (request,response){
-         fs.readFile("tyoaikamerkinta.html", function(err, data){
+         fs.readFile("tyoaikamerkinnat.html", function(err, data){
             response.writeHead(200, {'Content-Type' : 'text/html'});
             response.write(data);
             response.end();
@@ -81,7 +81,7 @@ app.route('/haeTyoaikamerkinnat')
         })
     .post(controller.luoTyoaikamerkinta);
     
-app.route('/Tyoaikamerkinta/:id')
+app.route('/tyoaikamerkinta/:id')
     .get(controller.haeTyoaikamerkinta)
     .post(controller.muokkaaTyoaikamerkintaa)
     .delete(controller.poistaTyoaikamerkinta);
