@@ -42,8 +42,24 @@ th, td {
 }
 
 </style>
+<style type="text/css">
+    #pvmTeksti{display:inline-block;}
+    #pvmTarkistus{display:inline-block;}
+    #tyontekijaTeksti{display:inline-block;}
+    #idTarkistus{display:inline-block;}
+</style>
 <script>
     $(document).ready(function() {
+
+        $("#pvmTarkistus").hide();
+        $("#pvmTeksti").click(function(){
+            $("#pvmTarkistus").show();
+        });
+
+        $("#idTarkistus").hide();
+        $("#tyontekijaTeksti").click(function(){
+            $("#idTarkistus").show();
+        });
 
         $("#haeKaikkiTyoajatNappi").click(function () {
         $("#TyoaikamerkintaLista").html("");
@@ -58,6 +74,7 @@ th, td {
                 "<td>"+data[i].Pvm.substr(0, 10)+"</td>" +
                 "<td>"+data[i].Tunnit+"</td>" +
                 "<td> <button onclick='muokkaaTyoaikamerkintaa("+data[i].ID+")'>Muokkaa</button> </td>"+
+                "<td> <button class='poistaNappi' onclick='poistaTyoaikamerkinta("+data[i].ID+")'>Poista</button> </td>"+
                 "</tr>"
             )
         }
@@ -73,6 +90,18 @@ muokkaaTyoaikamerkintaa = (key) => {
      $("#s3").val(data[0].Tyotehtava_ID);
      $("#s4").val(data[0].Pvm.substr(0, 10));
      $("#s5").val(data[0].Tunnit);
+    });
+};
+
+$("#peruutaNappi").click(function () {
+    $("#muokkaaTyoaikamerkintaDialog").slideToggle();
+});
+
+poistaTyoaikamerkinta = (key) => {
+    $.ajax({
+        url: 'http://localhost:3002/tyoaikamerkinta/' + key,
+        type: 'DELETE',
+        data: $(this).serialize()
     });
 };
 
@@ -101,7 +130,7 @@ $('#tyoajatForm').submit(function (e) {
     <div  class="valikko">
         <a id="projektitNavi" href="/projektit">Projektit</a>
         <a id="tyontekijatNavi" href="/tyontekijat">Työntekijät</a>
-        <a id="tyoaikamerkinnatNavi" href="/tyoaikamerkinnat">Työaikamerkinnät</a>
+        <a id="tyoaikamerkinnatNavi" href="/tyoaikamerkinta">Työaikamerkinnät</a>
       </div>
 
 <!--Työajat-->
@@ -122,10 +151,12 @@ $('#tyoajatForm').submit(function (e) {
 </table>
 
 <form id="tyoajatForm" action="http://localhost:3002/tyoaikamerkinta" method="POST">
-    <p>Työntekijän ID: <input type="text" name="Tyontekija_ID"></p>
+    <p id="tyontekijaTeksti">Työntekijän ID: <input id="tyontekijaTeksti" type="text" name="Tyontekija_ID"></p>
+    <p id="idTarkistus">Anna kaikki ID numeroina</p>
     <p>Projekti_ID: <input type="text" name="Projekti_ID"></p>
     <p>Työtehtävä ID: <input type="text" name="Tyotehtava_ID"></p>
-    <p>Pvm: <input type="text" name="Pvm"></p>
+    <p id="pvmTeksti">Pvm: <input id="pvmTeksti" type="text" name="Pvm"></p>
+    <p id="pvmTarkistus">Anna muodossa "2019-10-20"</p>
     <p>Tunnit: <input type="text" name="Tunnit"></p>
     <input type="submit" value="Lisää">
 </form>
@@ -142,7 +173,7 @@ $('#tyoajatForm').submit(function (e) {
         <p>Pvm: <input type="text" id="s4" name="Pvm"></p>
         <p>Työtunnit: <input type="text" id="s5" name="Tunnit"></p>
         <input type="submit" value="Tallenna">
-        <input type="button" value="Peruuta">
+        <input  id="peruutaNappi" type="button" value="Peruuta">
     </form>
 </dialog>
 </body>

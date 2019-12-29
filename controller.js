@@ -1,7 +1,5 @@
 'use strict'
 
-// Asenna ensin mysql driver 
-// npm install mysql --save
 
 var mysql = require('mysql');
 
@@ -243,7 +241,7 @@ haeKaikkiProjektit: function(req, res){
               
               connection.query(sql, function(error, results, fields){
                 if ( error ){
-                  console.log("Virhe lisätessä projektia: " + error);
+                  console.log("Virhe lisätessä Työaikamerkintää: " + error);
                   res.send({"status": "Jokin kenttä on tyhjä tai syötit vääränlaista dataa", "error": error, "response": null}); 
                 }
                 else

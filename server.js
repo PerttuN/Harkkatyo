@@ -12,7 +12,6 @@ const hostname = '127.0.0.1';
 const port = process.env.PORT || 3002;
 
 
-//CORS middleware
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -71,7 +70,7 @@ app.route('/tyontekijat/:id')
 app.route('/haeTyoaikamerkinnat')
     .get(controller.haeKaikkiTyoaikamerkinnat);
     
- app.route('/tyoaikamerkinnat')
+ app.route('/tyoaikamerkinta')
     .get(function (request,response){
          fs.readFile("tyoaikamerkinnat.html", function(err, data){
             response.writeHead(200, {'Content-Type' : 'text/html'});

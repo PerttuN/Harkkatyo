@@ -42,8 +42,24 @@ th, td {
 }
 
 </style>
+<style type="text/css">
+    #aloitusPvmTeksti{display:inline-block;}
+    #pvmTarkistus{display:inline-block;}
+    #tyosuhdeTeksti{display:inline-block;}
+    #idTarkistus{display:inline-block;}
+</style>
 <script>
     $(document).ready(function() {
+
+    $("#pvmTarkistus").hide();
+    $("#aloitusPvmTeksti").click(function(){
+         $("#pvmTarkistus").show();
+    });
+
+    $("#idTarkistus").hide();
+    $("#tyosuhdeTeksti").click(function(){
+         $("#idTarkistus").show();
+    });
 
     $("#haeKaikkiTyontekijatNappi").click(function () {
     $("#tyontekijaLista").html("");
@@ -58,6 +74,7 @@ th, td {
                 "<td>"+data[i].Tyosuhde_ID+"</td>" +
                 "<td>"+data[i].Tyosuhteen_aloitusPvm.substr(0, 10)+"</td>" +
                 "<td> <button onclick='muokkaaTyontekija("+data[i].ID+")'>Muokkaa</button> </td>"+
+                "<td> <button class='poistaNappi' onclick='poistaTyontekija("+data[i].ID+")'>Poista</button> </td>"+
                 "</tr>"
             )
         }
@@ -85,6 +102,14 @@ $('#tyontekijanMuokkaus').submit(function (e) {
    });
 });
 
+poistaTyontekija = (key) => {
+    $.ajax({
+        url: 'http://localhost:3002/tyontekijat/' + key,
+        type: 'DELETE',
+        data: $(this).serialize()
+    });
+};
+
 $('#tyontekijaForm').submit(function (e) {
     e.preventDefault
     $.ajax({
@@ -101,7 +126,7 @@ $('#tyontekijaForm').submit(function (e) {
     <div  class="valikko">
         <a id="projektitNavi" href="/projektit">Projektit</a>
         <a id="tyontekijatNavi" href="/tyontekijat">Työntekijät</a>
-        <a id="tyoaikamerkinnatNavi" href="/tyoaikamerkinnat">Työaikamerkinnät</a>
+        <a id="tyoaikamerkinnatNavi" href="/tyoaikamerkinta">Työaikamerkinnät</a>
       </div>
 
 <!--Työntekijät-->
@@ -125,8 +150,12 @@ $('#tyontekijaForm').submit(function (e) {
         <p>Etunimi: <input type="text" name="Etunimi"></p>
         <p>Sukunimi: <input type="text" name="Sukunimi"></p>
         <p>Osoite: <input type="text" name="Osoite"></p>
-        <p>Työsuhde ID: <input type="text" name="Tyosuhde_ID"></p>
-        <p>Tyosuhteen_aloitusPvm: <input type="text" name="Tyosuhteen_aloitusPvm"></p>
+        <p id="tyosuhdeTeksti">Työsuhde ID: <input id="tyosuhdeTeksti" type="text" name="Tyosuhde_ID"></p>
+        <p id="idTarkistus">Anna ID numerona</p>
+        <br>
+        <p id="aloitusPvmTeksti">Tyosuhteen_aloitusPvm: <input id="aloitusPvmTeksti" type="text" name="Tyosuhteen_aloitusPvm"></p>
+        <p id="pvmTarkistus">Anna muodossa "2019-10-20"</p>
+        <br>
         <input type="submit" value="Lisää">
     </form>
     <br>

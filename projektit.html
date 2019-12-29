@@ -42,9 +42,23 @@ th, td {
   padding: 5px;
 }
 
+
+.pvmTarkistus{
+    display:hidden;
+}
+
+</style>
+<style type="text/css">
+    #aloitusPvmTeksti{display:inline-block;}
+    #pvmTarkistus{display:inline-block;}
 </style>
 <script>
     $(document).ready(function() {
+        
+        $("#pvmTarkistus").hide();
+        $("#aloitusPvmTeksti").click(function(){
+            $("#pvmTarkistus").show();
+        });
 
         $("#haeKaikkiProjektitNappi").click(function () {
         $("#projektiLista").html("");
@@ -63,6 +77,10 @@ th, td {
             )
         }
     });
+});
+
+$("#peruutaNappi").click(function () {
+    $("#muokkaaProjektiDialog").slideToggle();
 });
 
 muokkaaProjekti = (key) => {
@@ -110,7 +128,7 @@ $('#projektiForm').submit(function (e) {
     <div  class="valikko">
         <a id="projektitNavi" href="/projektit">Projektit</a>
         <a id="tyontekijatNavi" href="/tyontekijat">Työntekijät</a>
-        <a id="tyoaikamerkinnatNavi" href="/tyoaikamerkinnat">Työaikamerkinnät</a>
+        <a id="tyoaikamerkinnatNavi" href="/tyoaikamerkinta">Työaikamerkinnät</a>
       </div>
 
       <!--Projekti-->
@@ -132,7 +150,8 @@ $('#projektiForm').submit(function (e) {
         <form id="projektiForm" action="http://localhost:3002/projektit" method="POST">
             <p>Projektin nimi: <input type="text" name="Nimi"></p>
             <p>Kuvaus: <input type="text" name="Kuvaus"></p>
-            <p>Aloitus pvm: <input type="text" name="AloitusPVM"></p>
+            <p id="aloitusPvmTeksti">Aloitus pvm: <input id="aloitusPvmTeksti" type="text" name="AloitusPVM"></p>
+            <p id="pvmTarkistus">Anna päivämäärät muodossa "2019-10-20"</p>
             <p>Määräaika: <input type="text" name="Maaraaika"></p>
             <input type="submit" value="Lisää">
         </form>
@@ -148,7 +167,7 @@ $('#projektiForm').submit(function (e) {
             <p>Aloitus pvm <input type="text" id="s4" name="AloitusPVM"></p>
             <p>Määräaika <input type="text" id="s5" name="Maaraaika"></p>
             <input type="submit" value="Tallenna">
-            <input type="button" value="Peruuta">
+            <input id="peruutaNappi" type="button" value="Peruuta">
         </form>
     </dialog>
 
